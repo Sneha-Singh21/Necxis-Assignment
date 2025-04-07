@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  transpilePackages: ["firebase"],
+  transpilePackages: ['firebase'],
 };
 
 module.exports = nextConfig;
