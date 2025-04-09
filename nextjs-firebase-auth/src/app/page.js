@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { signInWithPopup, onAuthStateChanged } from 'firebase/auth';
-import { auth, provider } from '@/lib/firebase';
+import { useEffect, useState } from "react";
+import { signInWithPopup, onAuthStateChanged } from "firebase/auth";
+import { auth, provider } from "@/lib/firebase";
 import {
   Box,
   Button,
@@ -11,7 +11,7 @@ import {
   Paper,
   Fade,
   CircularProgress,
-} from '@mui/material';
+} from "@mui/material";
 
 export default function Home() {
   const [user, setUser] = useState(null);
@@ -28,26 +28,56 @@ export default function Home() {
   }, []);
 
   // 🔁 Send token to React Native WebView (or fallback deep link)
+  // In your web app's effect
   useEffect(() => {
     const sendTokenToWebView = async () => {
       if (user) {
-        const token = await user.getIdToken();
+        try {
+          const token = await user.getIdToken();
 
-        const payload = {
-          token,
-          email: user.email,
-          name: user.displayName,
-          photoURL: user.photoURL,
-        };
+          const payload = {
+            token,
+            email: user.email,
+            name: user.displayName,
+            photoURL: user.photoURL,
+          };
 
-        if (typeof window !== 'undefined' && window.ReactNativeWebView) {
-          console.log("✅ Preparing to send message...");
-          window.ReactNativeWebView.postMessage(JSON.stringify(payload));
-          console.log("✅ Message sent to React Native!");
+          // More robust check for ReactNativeWebView
+          if (typeof window !== "undefined") {
+            // Try multiple times with a delay
+            let attempts = 0;
+            const maxAttempts = 5;
 
-        } else {
-          // fallback (optional): open app via deep link
-          window.location.href = `myapp://login?token=${token}`;
+            const tryToSendMessage = () => {
+              attempts++;
+              console.log(
+                `Attempt ${attempts} to send message to React Native`
+              );
+
+              if (window.ReactNativeWebView) {
+                console.log("✅ ReactNativeWebView found, sending message...");
+                window.ReactNativeWebView.postMessage(JSON.stringify(payload));
+                console.log("✅ Message sent to React Native!");
+                return true;
+              } else {
+                console.log("❌ ReactNativeWebView not found yet");
+                if (attempts < maxAttempts) {
+                  setTimeout(tryToSendMessage, 500); // Try again in 500ms
+                } else {
+                  console.log(
+                    "❌ Max attempts reached, falling back to deep link"
+                  );
+                  // fallback: open app via deep link
+                  window.location.href = `myapp://login?token=${token}`;
+                }
+                return false;
+              }
+            };
+
+            tryToSendMessage();
+          }
+        } catch (error) {
+          console.error("Failed to get token:", error);
         }
       }
     };
@@ -59,7 +89,7 @@ export default function Home() {
     try {
       await signInWithPopup(auth, provider);
     } catch (error) {
-      console.error('Login failed:', error);
+      console.error("Login failed:", error);
     }
   };
 
@@ -68,7 +98,7 @@ export default function Home() {
       await auth.signOut();
       setUser(null);
     } catch (error) {
-      console.error('Logout failed:', error);
+      console.error("Logout failed:", error);
     }
   };
 
@@ -79,7 +109,7 @@ export default function Home() {
         justifyContent="center"
         alignItems="center"
         minHeight="100vh"
-        sx={{ background: 'linear-gradient(to right, #e0c3fc, #8ec5fc)' }}
+        sx={{ background: "linear-gradient(to right, #e0c3fc, #8ec5fc)" }}
       >
         <CircularProgress size={60} />
       </Box>
@@ -93,7 +123,7 @@ export default function Home() {
       justifyContent="center"
       alignItems="center"
       sx={{
-        background: 'linear-gradient(135deg, #f6d365 0%, #fda085 100%)',
+        background: "linear-gradient(135deg, #f6d365 0%, #fda085 100%)",
         padding: 2,
       }}
     >
@@ -101,25 +131,25 @@ export default function Home() {
         <Paper
           elevation={6}
           sx={{
-            width: '100%',
+            width: "100%",
             maxWidth: 420,
             p: 4,
             borderRadius: 4,
-            textAlign: 'center',
-            backdropFilter: 'blur(10px)',
-            backgroundColor: 'rgba(255, 255, 255, 0.9)',
-            boxShadow: '0 8px 24px rgba(0,0,0,0.2)',
+            textAlign: "center",
+            backdropFilter: "blur(10px)",
+            backgroundColor: "rgba(255, 255, 255, 0.9)",
+            boxShadow: "0 8px 24px rgba(0,0,0,0.2)",
           }}
         >
           <Typography
             variant="h4"
-            sx={{ fontWeight: 600, mb: 2, fontFamily: 'Poppins, sans-serif' }}
+            sx={{ fontWeight: 600, mb: 2, fontFamily: "Poppins, sans-serif" }}
           >
-            {user ? `Hey, ${user.displayName}!` : 'Welcome 👋'}
+            {user ? `Hey, ${user.displayName}!` : "Welcome 👋"}
           </Typography>
 
-          <Typography variant="subtitle1" sx={{ mb: 3, color: '#666' }}>
-            {user ? 'Glad to see you here!' : 'Please sign in to continue'}
+          <Typography variant="subtitle1" sx={{ mb: 3, color: "#666" }}>
+            {user ? "Glad to see you here!" : "Please sign in to continue"}
           </Typography>
 
           {user ? (
@@ -130,11 +160,11 @@ export default function Home() {
                 sx={{
                   width: 100,
                   height: 100,
-                  margin: '0 auto 16px',
-                  border: '3px solid #fda085',
+                  margin: "0 auto 16px",
+                  border: "3px solid #fda085",
                 }}
               />
-              <Typography variant="body2" sx={{ mb: 3, color: '#444' }}>
+              <Typography variant="body2" sx={{ mb: 3, color: "#444" }}>
                 {user.email}
               </Typography>
               <Button
@@ -152,8 +182,8 @@ export default function Home() {
               fullWidth
               onClick={handleSignIn}
               sx={{
-                background: 'linear-gradient(to right, #667eea, #764ba2)',
-                color: '#fff',
+                background: "linear-gradient(to right, #667eea, #764ba2)",
+                color: "#fff",
               }}
             >
               Sign in with Google
