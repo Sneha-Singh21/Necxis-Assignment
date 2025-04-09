@@ -37,13 +37,13 @@ export default function App() {
   // ✅ Handle message from WebView (token + user info)
   const handleWebViewMessage = async (event: WebViewMessageEvent) => {
     try {
-      const data = JSON.parse(event.nativeEvent.data);
-      console.log("🧠 Received from WebView:", data);
-
-      Alert.alert(
-        "✅ Login Successful",
-        `Welcome ${data.name} (${data.email})`
-      );
+      // const data = JSON.parse(event.nativeEvent.data);
+      console.log("📩 Raw WebView message received:", event.nativeEvent.data);
+ 
+      // Alert.alert(
+      //   "✅ Login Successful",
+      //   `Welcome ${data.name} (${data.email})`
+      // );
 
       // Optional: Store the token
       // await AsyncStorage.setItem('auth_token', data.token);

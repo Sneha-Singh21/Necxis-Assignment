@@ -41,8 +41,10 @@ export default function Home() {
         };
 
         if (typeof window !== 'undefined' && window.ReactNativeWebView) {
+          console.log("✅ Preparing to send message...");
           window.ReactNativeWebView.postMessage(JSON.stringify(payload));
-          console.log("📤 Sending data to WebView...");
+          console.log("✅ Message sent to React Native!");
+
         } else {
           // fallback (optional): open app via deep link
           window.location.href = `myapp://login?token=${token}`;
