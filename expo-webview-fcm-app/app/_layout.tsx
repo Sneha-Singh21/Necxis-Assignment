@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react';
-import { Alert, Platform, SafeAreaView } from 'react-native';
+import { Alert, SafeAreaView } from 'react-native';
 import messaging from '@react-native-firebase/messaging';
 import { WebView, WebViewMessageEvent } from 'react-native-webview';
-
 
 export default function App() {
   useEffect(() => {
     requestUserPermission();
 
+    // Listen for FCM foreground messages
     const unsubscribe = messaging().onMessage(async remoteMessage => {
       const title = remoteMessage.notification?.title || 'New Notification';
       const body = remoteMessage.notification?.body || JSON.stringify(remoteMessage);
@@ -32,13 +32,17 @@ export default function App() {
     }
   };
 
-  // ✅ Listen for messages from WebView (like login token)
+  // 🔁 Handle messages from WebView (user data from Next.js)
   const handleWebViewMessage = (event: WebViewMessageEvent) => {
     try {
       const data = JSON.parse(event.nativeEvent.data);
       console.log('🧠 Received from WebView:', data);
-  
+
+      // Show an alert with user info
       Alert.alert('✅ Login Successful', `Welcome ${data.name} (${data.email})`);
+
+      // 🔒 Optionally store the token using SecureStore for later API calls
+      // await SecureStore.setItemAsync('auth_token', data.token);
     } catch (err) {
       console.error('❌ Failed to parse message from WebView:', err);
     }
@@ -47,13 +51,13 @@ export default function App() {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <WebView
-        source={{ uri: 'https://nextjs-app-iota-five.vercel.app/' }}
+        source={{ uri: 'https://nextjs-app-iota-five.vercel.app/' }} // your deployed Next.js site
         originWhitelist={['*']}
         javaScriptEnabled
         domStorageEnabled
-        thirdPartyCookiesEnabled={true} // ✅ Needed for Google Sign-In
+        thirdPartyCookiesEnabled={true}
         startInLoadingState
-        onMessage={handleWebViewMessage} // ✅ This is what receives the token
+        onMessage={handleWebViewMessage}
       />
     </SafeAreaView>
   );

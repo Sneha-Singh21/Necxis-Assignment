@@ -9,36 +9,50 @@ import {
   Box,
   Avatar,
   CircularProgress,
-  Container,
   Paper,
   Fade,
 } from "@mui/material";
 
 export default function Home() {
-  // State to store the logged-in user
   const [user, setUser] = useState(null);
-  // State to show a loading indicator until auth state is known
   const [loading, setLoading] = useState(true);
 
-  // 🔁 Monitor authentication state on component mount
+  // 🔁 Monitor authentication state
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
-      setLoading(false); // Hide loader once we know the auth state
+      setLoading(false);
     });
 
-    // 🧹 Clean up the listener on unmount
     return () => unsubscribe();
   }, []);
 
-  // 🔐 Sign in with Google popup
+  // ✅ Send token to React Native WebView if already logged in
+  useEffect(() => {
+    const sendTokenToWebView = async () => {
+      if (user && typeof window !== "undefined" && window.ReactNativeWebView) {
+        const idToken = await user.getIdToken();
+        window.ReactNativeWebView.postMessage(
+          JSON.stringify({
+            token: idToken,
+            email: user.email,
+            name: user.displayName,
+            photoURL: user.photoURL,
+          })
+        );
+      }
+    };
+
+    sendTokenToWebView();
+  }, [user]);
+
+  // 🔐 Google Sign-In
   const handleSignIn = async () => {
     try {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
       const idToken = await user.getIdToken();
 
-      // ✅ Send token to React Native app via WebView
       if (typeof window !== "undefined" && window.ReactNativeWebView) {
         window.ReactNativeWebView.postMessage(
           JSON.stringify({
@@ -49,14 +63,12 @@ export default function Home() {
           })
         );
       }
-
-      // ✅ onAuthStateChanged will still set user state as you already have it
     } catch (error) {
       console.error("Login failed:", error);
     }
   };
 
-  // 🚪 Sign out function
+  // 🚪 Sign out
   const handleSignOut = async () => {
     try {
       await auth.signOut();
@@ -66,7 +78,7 @@ export default function Home() {
     }
   };
 
-  // 🌀 Show loading spinner while checking auth status
+  // 🌀 Loading Spinner
   if (loading) {
     return (
       <Box
@@ -91,12 +103,10 @@ export default function Home() {
       justifyContent="center"
       alignItems="center"
       sx={{
-        // 🌈 Gradient background for soft modern look
         background: "linear-gradient(135deg, #f6d365 0%, #fda085 100%)",
         padding: 2,
       }}
     >
-      {/* ⬇️ Fade animation when component appears */}
       <Fade in timeout={600}>
         <Paper
           elevation={6}
@@ -106,12 +116,11 @@ export default function Home() {
             p: 4,
             borderRadius: 4,
             textAlign: "center",
-            backdropFilter: "blur(10px)", // Frosted glass effect
+            backdropFilter: "blur(10px)",
             backgroundColor: "rgba(255, 255, 255, 0.9)",
-            boxShadow: "0 8px 24px rgba(0,0,0,0.2)", // Deep shadow for elevation
+            boxShadow: "0 8px 24px rgba(0,0,0,0.2)",
           }}
         >
-          {/* 🧾 Welcome Message */}
           <Typography
             variant="h4"
             sx={{ fontWeight: 600, mb: 2, fontFamily: "Poppins, sans-serif" }}
@@ -125,7 +134,6 @@ export default function Home() {
 
           {user ? (
             <>
-              {/* 🧑‍🦱 User Avatar with hover effect */}
               <Avatar
                 src={user.photoURL}
                 alt={user.displayName}
@@ -139,12 +147,10 @@ export default function Home() {
                 }}
               />
 
-              {/* 📧 Email */}
               <Typography variant="body2" sx={{ mb: 3, color: "#444" }}>
                 {user.email}
               </Typography>
 
-              {/* 🔘 Sign Out Button */}
               <Button
                 variant="outlined"
                 color="error"
@@ -164,7 +170,6 @@ export default function Home() {
               </Button>
             </>
           ) : (
-            // 🔐 Google Sign-in Button with gradient
             <Button
               variant="contained"
               fullWidth
