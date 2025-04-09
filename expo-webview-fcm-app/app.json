@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "expo-next-webview",
-    "slug": "expo-next-webview",
+    "name": "expo-webview-fcm-app",
+    "slug": "expo-webview-fcm-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -15,7 +15,14 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.sneha_21.expowebviewfcmapp",
+      "googleServicesFile": "./android/app/google-services.json",
+      "permissions": [
+        "NOTIFICATIONS",
+        "WAKE_LOCK",
+        "RECEIVE_BOOT_COMPLETED"
+      ]
     },
     "web": {
       "bundler": "metro",
@@ -32,10 +39,21 @@
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
         }
-      ]
+      ],
+      "@react-native-firebase/app",
+      "@react-native-firebase/messaging"
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "f56aff37-77bd-4ab8-9030-93cefe1b92df"
+      }
+    },
+    "owner": "sneha_21"
   }
 }

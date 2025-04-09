@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "514785020505",
+    "project_id": "nextexpoapp-87965",
+    "storage_bucket": "nextexpoapp-87965.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:514785020505:android:5e1719c29d68f3057c7f48",
+        "android_client_info": {
+          "package_name": "com.sneha_21.expowebviewfcmapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "514785020505-9l3h450ma1fkdvo046v37dqq22h8suqv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCXe5xo6LOmr1sSHs_f3nTPd93OL9IF5iA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "514785020505-9l3h450ma1fkdvo046v37dqq22h8suqv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
